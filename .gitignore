@@ -1,0 +1,21 @@
+# Данные пациентов
+TEST DATA/
+Входные данные/
+
+# Нормативы Brain Charts (386 MB PKL — скачать отдельно с Zenodo)
+brainchart_norms/
+
+# Служебные файлы
+__pycache__/
+*.pyc
+.DS_Store
+
+# Тестовые изображения (отладочные)
+test_dk_*.png
+test_final_*.png
+
+# Шаблон стороннего задания
+screenshots/НБ_ИМЯ_задание_4.docx
+
+# Streamlit
+.streamlit/

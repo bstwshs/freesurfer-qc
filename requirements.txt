@@ -1,0 +1,7 @@
+streamlit
+pandas
+numpy
+nibabel
+matplotlib
+scikit-image
+requests
