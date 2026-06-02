@@ -643,7 +643,7 @@ for run in h.runs:
     run.font.name = 'Times New Roman'
 
 doc.add_paragraph(
-    'Исходный код прототипа: [ССЫЛКА НА GITHUB]'
+    'Исходный код прототипа: https://github.com/bstwshs/freesurfer-qc'
 )
 doc.add_paragraph(
     'Нормативные данные Brain Charts (Rutherford et al., eLife, 2022): '
