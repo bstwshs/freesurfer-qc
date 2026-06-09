@@ -568,3 +568,61 @@ def generate_slice(brain_mgz_path: str, region_name: str,
     fig.savefig(str(output_path), dpi=100, bbox_inches="tight")
     plt.close(fig)
     return str(output_path.resolve())
+
+
+def save_slice_image(
+    brain_data: np.ndarray,
+    aseg_data: np.ndarray,
+    flagged_regions: list,
+    flagged_label_ids: dict,
+    output_path: str,
+    axis: str = "axial",
+    show_overlay: bool = True,
+    alpha_bad: float = 0.4,
+    alpha_check: float = 0.35,
+    dpi: int = 150,
+) -> str:
+    """
+    Сохраняет изображение среза с overlay-подсветкой в файл.
+
+    Выбирает оптимальный срез по первому flagged-региону (best_slice_for_region)
+    и вызывает render_slice_view.
+
+    Args:
+        brain_data: 3D-массив brain.mgz
+        aseg_data: 3D-массив aseg.mgz (или aparc+aseg.mgz)
+        flagged_regions: список имён проблемных регионов
+        flagged_label_ids: словарь {region: {'label_id': int, 'verdict': str}}
+        output_path: путь для сохранения PNG
+        axis: ось среза (по умолчанию "axial")
+        show_overlay: рисовать ли overlay
+        alpha_bad: прозрачность Bad-регионов
+        alpha_check: прозрачность Check-регионов
+        dpi: разрешение сохранения
+
+    Returns:
+        str — путь к сохранённому файлу
+    """
+    from pathlib import Path
+
+    # Определяем лучший срез по первому flagged-региону
+    slice_idx = brain_data.shape[2] // 2  # fallback
+    if flagged_regions and flagged_label_ids:
+        first_region = flagged_regions[0]
+        info = flagged_label_ids.get(first_region)
+        if info and info.get("label_id") is not None:
+            slice_idx = best_slice_for_region(aseg_data, info["label_id"], axis)
+
+    fig = render_slice_view(
+        brain_data, axis, slice_idx, flagged_regions,
+        flagged_label_ids=flagged_label_ids,
+        aseg_data=aseg_data,
+        show_overlay=show_overlay,
+        alpha_bad=alpha_bad,
+        alpha_check=alpha_check,
+    )
+    out = Path(output_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(str(out), dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return str(out.resolve())
